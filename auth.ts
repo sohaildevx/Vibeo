@@ -21,7 +21,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               name: user.name,
               image: user.image,
 
-                account:{
+                accounts:{
                    create:{
                        type: account.type,
                        provider: account.provider,
