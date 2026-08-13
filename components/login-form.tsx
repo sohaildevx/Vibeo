@@ -9,13 +9,24 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { FaGithub, FaGoogle } from "react-icons/fa"
+import { signIn } from "@/auth"
 
 export function LoginForm({
   className,
   ...props
-}: React.ComponentProps<"form">) {
+}: React.ComponentProps<"div">) {
+  const signInWithGithub = async () => {
+    "use server"
+    await signIn("github", { redirectTo: "/" })
+  }
+
+  const signInWithGoogle = async () => {
+    "use server"
+    await signIn("google", { redirectTo: "/" })
+  }
+
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn("flex flex-col gap-6", className)} {...props}>
       <FieldGroup>
         <div className="flex flex-col items-center gap-2 text-center">
           <h1 className="text-3xl font-bold tracking-tight text-blue-800">Welcome back</h1>
@@ -47,14 +58,18 @@ export function LoginForm({
         <FieldSeparator>or continue with</FieldSeparator>
         <Field>
           <div className="grid grid-cols-2 gap-3">
-            <Button variant="outline" type="button">
-              <FaGithub className="mr-2 h-4 w-4" />
-              GitHub
-            </Button>
-            <Button variant="outline" type="button">
-              <FaGoogle className="mr-2 h-4 w-4" />
-              Google
-            </Button>
+            <form action={signInWithGithub}>
+              <Button variant="outline" type="submit" className="w-full">
+                <FaGithub className="mr-2 h-4 w-4" />
+                GitHub
+              </Button>
+            </form>
+            <form action={signInWithGoogle}>
+              <Button variant="outline" type="submit" className="w-full">
+                <FaGoogle className="mr-2 h-4 w-4" />
+                Google
+              </Button>
+            </form>
           </div>
           <FieldDescription className="text-center">
             Don&apos;t have an account?{" "}
@@ -64,6 +79,6 @@ export function LoginForm({
           </FieldDescription>
         </Field>
       </FieldGroup>
-    </form>
+    </div>
   )
 }

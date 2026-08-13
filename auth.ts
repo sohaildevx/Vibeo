@@ -31,7 +31,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                        expiresAt: account.expires_at,
                        tokenType: account.token_type,
                        scope: account.scope,
-                       idToken: account.id_token!,
+                         idToken: account.id_token ?? null,
                        sessionState: account.session_state?.toString() ?? null,
                    },
                 }
@@ -59,7 +59,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     expiresAt: account.expires_at,
                     tokenType: account.token_type,
                     scope: account.scope,
-                    idToken: account.id_token!,
+                    idToken: account.id_token ?? null,
                     sessionState: account.session_state?.toString() ?? null
                   }
               })

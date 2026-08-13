@@ -42,11 +42,20 @@ model Account{
   expiresAt Int? @map("expires_at")
   tokenType String? @map("token_type")
   scope String?
-  idToken String @map("id_token")
+  idToken String? @map("id_token")
   sessionState String? @map("session_state")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider,providerAccountId])
   @@index([userId])
+}
+
+model VerificationToken {
+  id         String   @id @default(cuid()) @map("_id")
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
 }
