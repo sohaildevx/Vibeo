@@ -4,13 +4,20 @@ import { useSession, signOut } from "next-auth/react"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import { LogOut, User } from "lucide-react"
+import { useState } from "react"
 
 export default function UserBtn() {
   const { data: session } = useSession()
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
 
   if (!session?.user) return null
 
   const { user } = session
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true)
+    await signOut()
+  }
 
   return (
     <Popover>
@@ -46,11 +53,12 @@ export default function UserBtn() {
           </div>
           <div className="h-px bg-border" />
           <button
-            onClick={() => signOut()}
-            className="flex items-center gap-2 w-full px-2 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-md cursor-pointer transition-colors"
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+            className="flex items-center gap-2 w-full px-2 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-md cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <LogOut className="size-4" />
-            Logout
+            <LogOut className={`size-4 ${isLoggingOut ? "animate-spin" : ""}`} />
+            {isLoggingOut ? "Logging out..." : "Logout"}
           </button>
         </div>
       </PopoverContent>
