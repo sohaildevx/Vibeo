@@ -9,22 +9,12 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { FaGithub, FaGoogle } from "react-icons/fa"
-import { signIn } from "@/auth"
+import { signInWithGithub, signInWithGoogle } from "@/modules/auth/actions"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const signInWithGithub = async () => {
-    "use server"
-    await signIn("github", { redirectTo: "/" })
-  }
-
-  const signInWithGoogle = async () => {
-    "use server"
-    await signIn("google", { redirectTo: "/" })
-  }
-
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <FieldGroup>
@@ -48,7 +38,7 @@ export function LoginForm({
               Forgot password?
             </a>
           </div>
-          <Input id="password" type="password" required placeholder="Enter Ppassword"/>
+          <Input id="password" type="password" required placeholder="Enter Password"/>
         </Field>
         <Field>
           <Button type="submit" className="w-full">

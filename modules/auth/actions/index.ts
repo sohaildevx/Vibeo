@@ -1,6 +1,6 @@
 "use server"
 
-import {auth} from "@/auth"
+import {auth, signIn} from "@/auth"
 import {prisma} from "@/lib/prisma"
 
 export const getUserById = async (id:string)=>{
@@ -37,4 +37,12 @@ export const getAccountByUserId = async(userId:string)=>{
 export const currentUser = async ()=>{
     const user = await auth();
     return user?.user;
+}
+
+export const signInWithGithub = async () => {
+    await signIn("github", { redirectTo: "/" })
+}
+
+export const signInWithGoogle = async () => {
+    await signIn("google", { redirectTo: "/" })
 }
