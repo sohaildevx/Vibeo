@@ -27,7 +27,7 @@ export default function Home() {
         </div>
 
         <Link
-          href="#vibe"
+          href="/dashboard"
           className="inline-flex h-11 items-center gap-2 rounded-lg bg-black px-6 text-sm font-bold text-white shadow-md transition-all hover:opacity-90 hover:shadow-lg dark:bg-white dark:text-black"
         >
           Get Started
