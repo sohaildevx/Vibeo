@@ -3,6 +3,7 @@ import {prisma} from "@/lib/prisma"
 import {currentUser} from "@/modules/auth/actions/index"
 import { revalidatePath } from "next/cache";
 import { error } from "next/dist/build/output/log";
+import type { CreatePlaygroundInput } from "@/modules/types";
 
 export const getAllPlaygroundForUser = async()=>{
      const user = await currentUser();
@@ -13,7 +14,8 @@ export const getAllPlaygroundForUser = async()=>{
                 userId:user?.id
             },
             include:{
-                user:true
+                user:true,
+                Starmark:true
             }
         })
 
@@ -24,11 +26,7 @@ export const getAllPlaygroundForUser = async()=>{
 }
 
 
-export const createPlayground = async(data:{
-    title:string,
-    template: "REACT"|"NEXTJS"|"EXPRESS"|"VUE"|"HONO"|"ANGULAR";
-    description?: string
-})=>{
+export const createPlayground = async(data: CreatePlaygroundInput)=>{
     const user = await currentUser();
 
     const {template, title, description} = data;

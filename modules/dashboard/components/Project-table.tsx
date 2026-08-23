@@ -45,7 +45,15 @@ interface ProjectTableProps {
   projects: Project[]
   onUpdateProject?: (id: string, data: { title: string; description: string }) => Promise<void>
   onDeleteProject?: (id: string) => Promise<void>
-  onDuplicateProject?: (id: string) => Promise<void>
+  onDuplicateProject?: (id: string) => Promise<{
+    id: string
+  title: string
+  description: string | null
+  template: string
+  createdAt: Date
+  updatedAt: Date
+  userId: string
+  } | undefined>
   onMarkasFavorite?: (id: string) => Promise<void>
 }
 
@@ -69,15 +77,38 @@ export default function ProjectTable({
   const [favoutrie, setFavourite] = useState(false)
   
   const handleEditClick = (project: Project) => {
+       setSelectedProject(project);
+       setEditData({
+        title:project.title,
+        description: project.description || ""
+       })
 
+       setEditDialogOpen(true);
   }
 
   const handleDeleteClick = async (project: Project) => {
-    
+     setSelectedProject(project);
+
+     setDeleteDialogOpen(true);
   }
 
   const handleUpdateProject = async () => {
-   
+    if (!selectedProject || !onUpdateProject) return;
+
+    setIsLoading(true);
+
+    try {
+      await onUpdateProject(selectedProject.id, editData)
+      setEditDialogOpen(false);
+      setSelectedProject(null);
+      toast.success("Project updated successfully")
+    } catch (error) {
+      toast.error("Failed to update project");
+      console.error("Error updating project:", error);
+    }
+    finally{
+      setIsLoading(false);
+    }
   }
 
   const handleMarkasFavorite = async (project: Project) => {
@@ -85,15 +116,45 @@ export default function ProjectTable({
   }
 
   const handleDeleteProject = async () => {
-   
+    if (!selectedProject || !onDeleteProject) return;
+
+    setIsLoading(true);
+
+    try {
+      await onDeleteProject(selectedProject.id)
+      setDeleteDialogOpen(false);
+      setSelectedProject(null);
+      toast.success("Project updated successfully")
+    } catch (error) {
+      toast.error("Failed to delete project");
+      console.error("Error deleting project:", error);
+    }
+    finally{
+      setIsLoading(false);
+    }
   }
 
   const handleDuplicateProject = async (project: Project) => {
-    
+      if (!onDuplicateProject) return;
+
+    setIsLoading(true);
+
+    try {
+      await onDuplicateProject(project.id)
+      toast.success("Project duplicated successfully")
+    } catch (error) {
+      toast.error("Failed to duplicate project");
+      console.error("Error duplicating project:", error);
+    }
+    finally{
+      setIsLoading(false);
+    }
   }
 
   const copyProjectUrl = (projectId: string) => {
-    
+    const url = `${window.location.origin}/playground/${projectId}`
+    navigator.clipboard.writeText(url);
+    toast.success("Project url copied to url");
   }
 
   return (

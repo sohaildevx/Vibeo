@@ -8,9 +8,9 @@ export interface PlaygroundData {
 
 export interface User {
   id:string
-  name:string
+  name:string | null
   email:string
-  image:string
+  image:string | null
   role:string
   createdAt:Date
   updatedAt:Date
@@ -19,11 +19,25 @@ export interface User {
 export interface Project {
   id:string
   title:string
-  description: string
-  template: string
+  description: string | null
+  template: PlaygroundTemplate
   createdAt: Date
   updatedAt: Date
   userId: string
   user: User
   Starmark: {isMarked: boolean}[]
+}
+
+export type PlaygroundTemplate =
+  | "REACT"
+  | "NEXTJS"
+  | "EXPRESS"
+  | "VUE"
+  | "HONO"
+  | "ANGULAR"
+
+export interface CreatePlaygroundInput {
+  title: string
+  template: PlaygroundTemplate
+  description?: string
 }
