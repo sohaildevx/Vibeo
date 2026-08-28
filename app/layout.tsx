@@ -37,9 +37,7 @@ export default async function RootLayout({
       >
         <body className="min-h-full flex flex-col">
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-            <div className="flex flex-col min-h-screen">
-              <Toaster />
-            </div>
+            <Toaster />
             {children}
           </ThemeProvider>
         </body>
