@@ -2,8 +2,45 @@
 import {prisma} from "@/lib/prisma"
 import {currentUser} from "@/modules/auth/actions/index"
 import { revalidatePath } from "next/cache";
-import { error } from "next/dist/build/output/log";
 import type { CreatePlaygroundInput } from "@/modules/types";
+import { tr } from "date-fns/locale";
+
+
+export const toggleStarMarked = async(playgroundId:string, isChecked:boolean) =>{
+    const user = await currentUser();
+    const userId = user?.id
+    if(!userId){
+        throw new Error("User Id is Required")
+    }
+
+    try {
+        if(isChecked){
+            await prisma.starMark.create({
+                data:{
+                    userId:userId!,
+                    playgroundId,
+                    isMarked: isChecked
+                },
+            });
+        }
+        else{
+           await prisma.starMark.delete({
+                where:{
+                    userId_playgroundId:{
+                        userId,
+                        playgroundId: playgroundId
+                    }
+                },
+            });
+        }
+
+        revalidatePath("/dashboard")
+        return {success: true, isMarked:isChecked};
+    } catch (error) {
+        console.error("Error updating problem:", error);
+        return {success:false, error:"Failed to update problem"};
+    }
+}
 
 export const getAllPlaygroundForUser = async()=>{
      const user = await currentUser();
@@ -15,7 +52,14 @@ export const getAllPlaygroundForUser = async()=>{
             },
             include:{
                 user:true,
-                Starmark:true
+                Starmark:{
+                    where:{
+                        userId:user?.id!
+                    },
+                    select:{
+                        isMarked:true
+                    }
+                }
             }
         })
 

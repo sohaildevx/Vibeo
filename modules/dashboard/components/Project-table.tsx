@@ -38,6 +38,7 @@ import { Textarea } from "@/components/ui/textarea"
 import Link from "next/link"
 import { useState } from "react"
 import { MoreHorizontal, Edit3, Trash2, ExternalLink, Copy, Download, Eye } from "lucide-react"
+import MarkedToggleButton from "@/modules/dashboard/components/Marked-toggle"
 import { toast } from "sonner"
 
 
@@ -192,7 +193,7 @@ export default function ProjectTable({
                     <div className="w-8 h-8 rounded-full overflow-hidden">
                       <Image
                         src={project.user.image || "/placeholder.svg"}
-                        alt={project.user.name}
+                        alt={project.user.name ?? "User"}
                         width={32}
                         height={32}
                         className="object-cover"
@@ -203,27 +204,22 @@ export default function ProjectTable({
                 </TableCell>
                 <TableCell>
                   <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <DropdownMenuTrigger render={<Button variant="ghost" size="icon" className="h-8 w-8" />}>
                         <MoreHorizontal className="h-4 w-4" />
                         <span className="sr-only">Open menu</span>
-                      </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48">
-                      <DropdownMenuItem asChild>
+                      
+                      <DropdownMenuItem render={<div />}>
                         <MarkedToggleButton markedForRevision={project.Starmark[0]?.isMarked} id={project.id} />
                       </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link href={`/playground/${project.id}`} className="flex items-center">
+                      <DropdownMenuItem render={<Link href={`/playground/${project.id}`} className="flex items-center" />}>
                           <Eye className="h-4 w-4 mr-2" />
                           Open Project
-                        </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link href={`/playground/${project.id}`} target="_blank" className="flex items-center">
+                      <DropdownMenuItem render={<Link href={`/playground/${project.id}`} target="_blank" className="flex items-center" />}>
                           <ExternalLink className="h-4 w-4 mr-2" />
                           Open in New Tab
-                        </Link>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => handleEditClick(project)}>
