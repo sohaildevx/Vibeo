@@ -43,3 +43,5 @@ next-env.d.ts
 /app/generated/prisma
 
 vibeo-starters
+CLAUDE.md
+AGENTS.md
