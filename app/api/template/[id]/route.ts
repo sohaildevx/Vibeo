@@ -38,6 +38,10 @@ export async function GET(
     const templateKey = playground.template as keyof typeof templatePaths;
     const templatePath = templatePaths[templateKey]
 
+    if(!templatePath){
+        return Response.json({error: `Unknown template: ${playground.template}`}, {status:404})
+    }
+
     try {
         const inputPath = path.join(process.cwd(), templatePath);
         const outPutFile = path.join(process.cwd(), `output/${templateKey}.json`)
@@ -54,6 +58,7 @@ export async function GET(
         return Response.json({success: true, templateJson: result}, {status:200})
     } catch (error) {
         console.log(error);
-        
+        const message = error instanceof Error ? error.message : "Failed to load template";
+        return Response.json({ error: message }, { status: 500 });
     }
 }
