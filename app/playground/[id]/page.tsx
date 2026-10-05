@@ -22,6 +22,8 @@ import { usePlayground } from "@/modules/playground/hooks/usePlayground";
 import { TemplateFileTree } from "@/modules/playground/components/playground-explorer";
 import { useFileExplorer } from "@/modules/playground/hooks/useFileExplorer";
 import { Save, Bot, Settings, FileText, X } from "lucide-react";
+import { ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import PlaygroundEditor from "@/modules/playground/components/playground-editor";
 
 const MainPlaygroundPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -195,6 +197,17 @@ const MainPlaygroundPage = () => {
                       )}
                     </div>
              </Tabs>
+              </div>
+              <div className="flex-1">
+                <ResizablePanelGroup direction="horizontal" className="h-full">
+                       <ResizablePanel defaultSize={isPreviewVisible ? 50: 100}>
+                          <PlaygroundEditor 
+                           activeFile={activeFile}
+                           content={activeFile?.content || ""}
+                           onContentChange={()=>{}}
+                          />
+                       </ResizablePanel>
+                </ResizablePanelGroup>
               </div>
         </div>
       ) : (
