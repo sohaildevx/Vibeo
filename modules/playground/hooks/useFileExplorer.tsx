@@ -29,6 +29,13 @@ interface FileExplorerState {
   openFile: (file: TemplateFile) => void;
   closeFile: (fileId: string) => void;
   closeAllFiles: () => void;
+  handleAddFile: (
+    newFile: TemplateFile,
+    parentPath: string,
+    writeFileSync?: (path: string, content: string) => Promise<void> | void,
+    instance?: unknown,
+    saveTemplateData?: (data: TemplateFolder) => Promise<void> | void,
+  ) => Promise<void>;
 }
 
 // @ts-ignore
@@ -48,7 +55,10 @@ export const useFileExplorer = create<FileExplorerState>((set, get) => ({
   setActiveFileId: (fileId) => set({ activeFileId: fileId }),
 
   openFile: (file) => {
-    const fileId = generateFileId(file, get().templateData!);
+    const root = get().templateData;
+    const fileId = root
+      ? generateFileId(file, root)
+      : `${file.filename}${file.fileExtension ? `.${file.fileExtension}` : ""}`;
     const { openFiles } = get();
     const existingFile = openFiles.find((f) => f.id === fileId);
 
@@ -138,7 +148,7 @@ export const useFileExplorer = create<FileExplorerState>((set, get) => ({
       );
 
       // Use the passed saveTemplateData function
-      await saveTemplateData(updatedTemplateData);
+      await saveTemplateData?.(updatedTemplateData);
 
       // Sync with web container
       if (writeFileSync) {

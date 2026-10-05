@@ -7,7 +7,7 @@ export default function PlaygroundLayout({
     children: React.ReactNode
 }) {
   return (
-    <SidebarProvider>
+    <SidebarProvider className="h-svh overflow-hidden">
         {children}
     </SidebarProvider>
   )

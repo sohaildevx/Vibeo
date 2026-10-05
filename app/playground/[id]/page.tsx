@@ -64,10 +64,10 @@ const MainPlaygroundPage = () => {
   }, [id, setPlaygroundId]);
 
   useEffect(() => {
-    if (templateData && !openFiles.length) {
+    if (templateData) {
       setTemplateData(templateData);
     }
-  }, [templateData, setTemplateData, openFiles.length]);
+  }, [templateData, setTemplateData]);
 
   const activeFile = openFiles.find((file) => file.id === activeFileId);
   const hasUnsavedChanges = openFiles.some((file) => file.hasUnsavedChanges);
@@ -95,6 +95,7 @@ const MainPlaygroundPage = () => {
           data={templateData}
           selectedFile={activeFile}
           title="File Explorer"
+          onFileSelect={openFile}
         />
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
@@ -114,29 +115,33 @@ const MainPlaygroundPage = () => {
 
               <div className="flex items-center gap-1">
                 <Tooltip>
-                  <TooltipTrigger>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => {}}
-                      disabled={!activeFile || !activeFile.hasUnsavedChanges}
-                    >
+                  <TooltipTrigger
+                    render={
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {}}
+                        disabled={!activeFile || !activeFile.hasUnsavedChanges}
+                      />
+                    }
+                  >
                       <Save className="h-4 w-4" />
-                    </Button>
                   </TooltipTrigger>
                   <TooltipContent>Save (Ctrl+S)</TooltipContent>
                 </Tooltip>
 
                 <Tooltip>
-                  <TooltipTrigger>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => {}}
-                      disabled={!hasUnsavedChanges}
-                    >
+                  <TooltipTrigger
+                    render={
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {}}
+                        disabled={!hasUnsavedChanges}
+                      />
+                    }
+                  >
                       <Save className="h-4 w-4" /> All
-                    </Button>
                   </TooltipTrigger>
                   <TooltipContent>Save All (Ctrl+Shift+S)</TooltipContent>
                 </Tooltip>
@@ -146,10 +151,8 @@ const MainPlaygroundPage = () => {
                 </Button>
 
                 <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <Button size="sm" variant="outline">
+                  <DropdownMenuTrigger render={<Button size="sm" variant="outline" />}>
                       <Settings className="h-4 w-4" />
-                    </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem
@@ -167,9 +170,9 @@ const MainPlaygroundPage = () => {
             </div>
           </header>
 
-          <div>
+          <div className="flex min-h-0 flex-1 flex-col">
             {openFiles.length > 0 ? (
-              <div className="h-full flex flex-col">
+              <div className="flex min-h-0 flex-1 flex-col">
                 <div className="border-b bg-muted/30">
                   <Tabs
                     value={activeFileId || ""}
@@ -218,10 +221,10 @@ const MainPlaygroundPage = () => {
                     </div>
                   </Tabs>
                 </div>
-                <div className="flex-1">
+                <div className="flex min-h-0 flex-1 flex-col">
                   <ResizablePanelGroup
-                    direction="horizontal"
-                    className="h-full"
+                    orientation="horizontal"
+                    className="min-h-0 flex-1"
                   >
                     <ResizablePanel defaultSize={isPreviewVisible ? 50 : 100}>
                       <PlaygroundEditor
@@ -251,7 +254,7 @@ const MainPlaygroundPage = () => {
                 </div>
               </div>
             ) : (
-              <div className="flex items-center justify-center h-64 text-muted-foreground text-sm">
+              <div className="flex min-h-0 flex-1 items-center justify-center text-muted-foreground text-sm">
                 Open a file to start editing
               </div>
             )}
