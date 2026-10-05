@@ -22,14 +22,21 @@ import { usePlayground } from "@/modules/playground/hooks/usePlayground";
 import { TemplateFileTree } from "@/modules/playground/components/playground-explorer";
 import { useFileExplorer } from "@/modules/playground/hooks/useFileExplorer";
 import { Save, Bot, Settings, FileText, X } from "lucide-react";
-import { ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 import PlaygroundEditor from "@/modules/playground/components/playground-editor";
+import { useWebContainer } from "@/modules/webcontainer/hooks/useWebContainer";
+import WebContainerPreview from "@/modules/webcontainer/components/webcontainer-preview";
+
 
 const MainPlaygroundPage = () => {
   const { id } = useParams<{ id: string }>();
   const { playgroundData, templateData, isLoading, error, saveTemplateData } =
     usePlayground(id);
-    const [isPreviewVisible, setIsPreviewVisible] = useState(true);
+  const [isPreviewVisible, setIsPreviewVisible] = useState(true);
 
   const {
     activeFileId,
@@ -39,7 +46,18 @@ const MainPlaygroundPage = () => {
     setTemplateData,
     setActiveFileId,
     setPlaygroundId,
+    setOpenFils,
+    openFile
   } = useFileExplorer();
+
+  const {
+      serverUrl,
+      isLoading:containerLoading,
+      error:containerError,
+      instance,
+      writeFileSync
+      // @ts-ignore
+  } = useWebContainer({templateData})
 
   useEffect(() => {
     setPlaygroundId(id);
@@ -84,50 +102,50 @@ const MainPlaygroundPage = () => {
             <Separator orientation="vertical" className="mr-2 h-4" />
 
             <div className="flex flex-1 items-center gap-2">
-            <div className="flex flex-col flex-1">
-              <h1 className="text-sm font-medium">
-                {playgroundData?.title || "Code Playground"}
-              </h1>
-              <p className="text-xs text-muted-foreground">
-                {openFiles.length} File(s) Open
-                {hasUnsavedChanges && ". Unsaved changes"}
-              </p>
-            </div>
+              <div className="flex flex-col flex-1">
+                <h1 className="text-sm font-medium">
+                  {playgroundData?.title || "Code Playground"}
+                </h1>
+                <p className="text-xs text-muted-foreground">
+                  {openFiles.length} File(s) Open
+                  {hasUnsavedChanges && ". Unsaved changes"}
+                </p>
+              </div>
 
-            <div className="flex items-center gap-1">
-              <Tooltip>
-                <TooltipTrigger>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => {}}
-                    disabled={!activeFile || !activeFile.hasUnsavedChanges}
-                  >
-                    <Save className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Save (Ctrl+S)</TooltipContent>
-              </Tooltip>
+              <div className="flex items-center gap-1">
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {}}
+                      disabled={!activeFile || !activeFile.hasUnsavedChanges}
+                    >
+                      <Save className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Save (Ctrl+S)</TooltipContent>
+                </Tooltip>
 
-              <Tooltip>
-                <TooltipTrigger>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => {}}
-                    disabled={!hasUnsavedChanges}
-                  >
-                    <Save className="h-4 w-4" /> All
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Save All (Ctrl+Shift+S)</TooltipContent>
-              </Tooltip>
-              
-              <Button variant={"default"} size={"icon"}>
-                    <Bot className="size-4"/>
-              </Button>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {}}
+                      disabled={!hasUnsavedChanges}
+                    >
+                      <Save className="h-4 w-4" /> All
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Save All (Ctrl+Shift+S)</TooltipContent>
+                </Tooltip>
 
-               <DropdownMenu>
+                <Button variant={"default"} size={"icon"}>
+                  <Bot className="size-4" />
+                </Button>
+
+                <DropdownMenu>
                   <DropdownMenuTrigger>
                     <Button size="sm" variant="outline">
                       <Settings className="h-4 w-4" />
@@ -145,17 +163,19 @@ const MainPlaygroundPage = () => {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
+              </div>
             </div>
-          </div>
           </header>
 
-   <div>
-    {
-      openFiles.length > 0 ? (
-        <div className="h-full flex flex-col">
-              <div className="border-b bg-muted/30">
-             <Tabs value={activeFileId || ""} onValueChange={setActiveFileId}>
-                  <div className="flex items-center justify-between px-4 py-2">
+          <div>
+            {openFiles.length > 0 ? (
+              <div className="h-full flex flex-col">
+                <div className="border-b bg-muted/30">
+                  <Tabs
+                    value={activeFileId || ""}
+                    onValueChange={setActiveFileId}
+                  >
+                    <div className="flex items-center justify-between px-4 py-2">
                       <TabsList className="h-8 bg-transparent p-0">
                         {openFiles.map((file) => (
                           <TabsTrigger
@@ -196,28 +216,46 @@ const MainPlaygroundPage = () => {
                         </Button>
                       )}
                     </div>
-             </Tabs>
-              </div>
-              <div className="flex-1">
-                <ResizablePanelGroup direction="horizontal" className="h-full">
-                       <ResizablePanel defaultSize={isPreviewVisible ? 50: 100}>
-                          <PlaygroundEditor 
-                           activeFile={activeFile}
-                           content={activeFile?.content || ""}
-                           onContentChange={()=>{}}
+                  </Tabs>
+                </div>
+                <div className="flex-1">
+                  <ResizablePanelGroup
+                    direction="horizontal"
+                    className="h-full"
+                  >
+                    <ResizablePanel defaultSize={isPreviewVisible ? 50 : 100}>
+                      <PlaygroundEditor
+                        activeFile={activeFile}
+                        content={activeFile?.content || ""}
+                        onContentChange={() => {}}
+                      />
+                    </ResizablePanel>
+
+                    {isPreviewVisible && (
+                      <>
+                        <ResizableHandle />
+                        <ResizablePanel defaultSize={50}>
+                          <WebContainerPreview
+                            templateData={templateData}
+                            instance={instance}
+                            writeFileSync={writeFileSync}
+                            isLoading={containerLoading}
+                            error={containerError}
+                            serverUrl={serverUrl!}
+                            forceResetup={false}
                           />
-                       </ResizablePanel>
-                </ResizablePanelGroup>
+                        </ResizablePanel>
+                      </>
+                    )}
+                  </ResizablePanelGroup>
+                </div>
               </div>
-        </div>
-      ) : (
-        <div className="flex items-center justify-center h-64 text-muted-foreground text-sm">
-          Open a file to start editing
-        </div>
-      )
-    }
-   </div>
-          
+            ) : (
+              <div className="flex items-center justify-center h-64 text-muted-foreground text-sm">
+                Open a file to start editing
+              </div>
+            )}
+          </div>
         </SidebarInset>
       </>
     </TooltipProvider>
