@@ -137,10 +137,8 @@ export function TemplateFileTree({
         <SidebarGroup>
           <SidebarGroupLabel>{title}</SidebarGroupLabel>
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <SidebarGroupAction>
+            <DropdownMenuTrigger render={<SidebarGroupAction />}>
                 <Plus className="h-4 w-4" />
-              </SidebarGroupAction>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={handleAddRootFile}>
@@ -295,14 +293,8 @@ function TemplateNode({
           </SidebarMenuButton>
 
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-              >
+            <DropdownMenuTrigger render={<Button variant="ghost" size="icon" className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity" />}>
                 <MoreHorizontal className="h-3 w-3" />
-              </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={handleRename}>
@@ -403,23 +395,15 @@ function TemplateNode({
           className="group/collapsible [&[data-state=open]>div>button>svg:first-child]:rotate-90"
         >
           <div className="flex items-center group">
-            <CollapsibleTrigger asChild>
-              <SidebarMenuButton className="flex-1">
+            <CollapsibleTrigger render={<SidebarMenuButton className="flex-1" />}>
                 <ChevronRight className="transition-transform" />
                 <Folder className="h-4 w-4 mr-2 shrink-0" />
                 <span>{folderName}</span>
-              </SidebarMenuButton>
             </CollapsibleTrigger>
 
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                >
+              <DropdownMenuTrigger render={<Button variant="ghost" size="icon" className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity" />}>
                   <MoreHorizontal className="h-3 w-3" />
-                </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={handleAddFile}>

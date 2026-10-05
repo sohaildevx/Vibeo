@@ -226,7 +226,10 @@ const MainPlaygroundPage = () => {
                     orientation="horizontal"
                     className="min-h-0 flex-1"
                   >
-                    <ResizablePanel defaultSize={isPreviewVisible ? 50 : 100}>
+                    <ResizablePanel
+                      defaultSize={isPreviewVisible ? "50" : "100"}
+                      minSize="20"
+                    >
                       <PlaygroundEditor
                         activeFile={activeFile}
                         content={activeFile?.content || ""}
@@ -237,7 +240,7 @@ const MainPlaygroundPage = () => {
                     {isPreviewVisible && (
                       <>
                         <ResizableHandle />
-                        <ResizablePanel defaultSize={50}>
+                        <ResizablePanel defaultSize="50" minSize="20">
                           <WebContainerPreview
                             templateData={templateData}
                             instance={instance}
