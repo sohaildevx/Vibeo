@@ -44,6 +44,22 @@ const WebContainerPreview = ({
 
   const terminalRef = useRef<any>(null);
 
+  useEffect(()=>{
+    if(forceResetup){
+      setIsSetupComplete(false);
+      setIsSetupInProgress(false);
+      setPreviewUrl("");
+      setCurrentStep(0);
+      setLoadingState({
+        transforming:false,
+        mounting:false,
+        installing:false,
+        starting:false,
+        ready:false
+      })
+    }
+  }, [forceResetup])
+
   useEffect(() => {
     async function setUpConatiner() {
       if (!instance || isSetupComplete || isSetupInProgress) return;
