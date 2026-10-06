@@ -22,7 +22,7 @@ interface FileExplorerState {
   setPlaygroundId: (id: string) => void;
   setTemplateData: (data: TemplateFolder | null) => void;
   setEditorContent: (content: string) => void;
-  setOpenFils: (files: OpenFile[]) => void;
+  setOpenFiles: (files: OpenFile[]) => void;
   setActiveFileId: (fileId: string | null) => void;
 
   //functions
@@ -84,7 +84,7 @@ export const useFileExplorer = create<FileExplorerState>((set, get) => ({
     set({ playgroundId: id });
   },
   setEditorContent: (content) => set({ editorContent: content }),
-  setOpenFils: (files) => set({ openFiles: files }),
+  setOpenFiles: (files) => set({ openFiles: files }),
   setActiveFileId: (fileId) => set({ activeFileId: fileId }),
 
   openFile: (file) => {
